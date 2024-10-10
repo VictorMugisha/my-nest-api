@@ -6,8 +6,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     AuthModule,
+    ConfigModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    // MongooseModule.forRoot(process.env.MONGO_URI),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {

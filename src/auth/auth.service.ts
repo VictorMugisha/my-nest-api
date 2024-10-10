@@ -11,10 +11,14 @@ import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcryptjs from 'bcryptjs';
 import { Response } from 'express';
+import { AuthJwtService } from './jwt.service';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly authJwtService: AuthJwtService,
+  ) {}
 
   async signup(signupDto: SignupDto): Promise<User> {
     const { name, username, password, confirmPassword } = signupDto;
@@ -59,6 +63,7 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     }
 
-    return res.status(200).json(user);
+    const token = this.authJwtService.generateToken(user._id.toString());
+    return res.status(200).json({ token });
   }
 }
