@@ -5,7 +5,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { User, UserRoles } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
@@ -21,7 +21,7 @@ export class AuthService {
   ) {}
 
   async signup(signupDto: SignupDto): Promise<User> {
-    const { name, username, password, confirmPassword } = signupDto;
+    const { name, username, password, confirmPassword, role } = signupDto;
 
     const existingUser = await this.userModel.findOne({ username }).exec();
     if (existingUser) {
@@ -39,6 +39,7 @@ export class AuthService {
       name,
       username,
       password: hashedPassword,
+      role: role === 'admin' ? UserRoles.ADMIN : UserRoles.USER,
     });
 
     await newUser.save();
@@ -63,7 +64,12 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     }
 
-    const token = this.authJwtService.generateToken(user._id.toString());
+    const payload = {
+      id: user._id.toString(),
+      role: user.role,
+    };
+
+    const token = this.authJwtService.generateToken(payload);
     return res.status(200).json({ token });
   }
 }
