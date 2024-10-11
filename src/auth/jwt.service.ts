@@ -9,7 +9,7 @@ export class AuthJwtService {
     return this.jwtService.sign(
       { id: userId },
       {
-        secret: 'this should be a secret and complex string',
+        secret: process.env.JWT_SECRET,
       },
     );
   }

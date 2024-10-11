@@ -1,7 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'src/auth/schemas/user.schema';
+import { RolesGuard } from 'src/guards/roles.guard';
 
+@UseGuards(RolesGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -13,6 +15,6 @@ export class UserController {
 
   @Get('user/:id')
   getSingleUser(@Param('id') id: string) {
-    return this.userService.getSingleUser(id)
+    return this.userService.getSingleUser(id);
   }
 }

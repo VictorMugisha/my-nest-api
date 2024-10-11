@@ -11,6 +11,7 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
+    console.log('inside middleware');
     const { authorization } = req.headers;
     if (!authorization) {
       throw new UnauthorizedException('No authorization header');
