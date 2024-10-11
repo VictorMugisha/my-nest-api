@@ -6,6 +6,11 @@ export class AuthJwtService {
   constructor(private readonly jwtService: JwtService) {}
 
   generateToken(userId: string): string {
-    return this.jwtService.sign({ id: userId });
+    return this.jwtService.sign(
+      { id: userId },
+      {
+        secret: 'this should be a secret and complex string',
+      },
+    );
   }
 }
