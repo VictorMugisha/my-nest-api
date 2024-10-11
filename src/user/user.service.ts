@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Request } from 'express';
 import { isValidObjectId, Model } from 'mongoose';
 import { User } from 'src/auth/schemas/user.schema';
 
@@ -27,5 +28,21 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async getMyDetails(req: Request): Promise<User> {
+    const userId = req.user.id;
+    if (!userId) {
+      console.log("This is the id: ", req.user)
+      throw new BadRequestException('You need to login first');
+    }
+
+    const user = await this.userModel.findById(userId).select('-password');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user
+    return null;
   }
 }

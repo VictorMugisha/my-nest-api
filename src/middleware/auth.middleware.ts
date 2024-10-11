@@ -26,7 +26,7 @@ export class AuthMiddleware implements NestMiddleware {
       if (!decoded || !decoded.id) {
         throw new UnauthorizedException('Invalid token payload');
       }
-      req.user = { _id: decoded.id };
+      req.user = { id: decoded.id, role: decoded.role };
       next();
     } catch (error) {
       console.log('Error in Auth Middleware: ', error);
